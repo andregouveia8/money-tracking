@@ -226,7 +226,7 @@ $: sumExpense = transactions.filter(t=>t.type=='expense').reduce((a,t)=>a+ +t.am
               <td class={t.type === 'income' ? 'income-amount' : 'expense-amount'}>{t.type=='income' ? '+' : '-'}{formatEuro(t.amount)}</td>
               <td>{t.category}</td>
               <td>{t.note}</td>
-              <td><button class="delete-btn" on:click={() => deleteTransaction(t.id)}>🗑️</button></td>
+              <td><button class="delete-btn" on:click={() => deleteTransaction(t.id)} data-tooltip="Delete">🗑️</button></td>
             </tr>
           {/each}
         </tbody>
@@ -243,9 +243,35 @@ $: sumExpense = transactions.filter(t=>t.type=='expense').reduce((a,t)=>a+ +t.am
 </main>
 {/if}
 <style>
-  .delete-btn { background: none; border: none; font-size: 1.1em; cursor: pointer; transition: background 0.17s; }
+  .delete-btn { background: none; border: none; font-size: 1.1em; cursor: pointer; transition: background 0.17s; position: relative; }
   .delete-btn:hover, .delete-btn:focus { background: #eee; color: #c92a2a; }
+  /* Tooltip Styles */
+  .delete-btn::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    transform: translateY(-50%) translateX(-8px);
+    background: #333;
+    color: #fff;
+    padding: 0.4em 0.8em;
+    border-radius: 6px;
+    font-size: 0.75em;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    margin-right: 8px;
+    z-index: 10;
+  }
+  .delete-btn:hover::before {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
   main.dark .delete-btn:hover, main.dark .delete-btn:focus { background: #262338; color: #fb7185; }
+  main.dark .delete-btn::before { background: #eee; color: #222; }
   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
   body, main { font-family: 'Roboto', Arial, Helvetica, sans-serif; }
   main { padding: 2rem; max-width: 560px; background: #fff; color: #222; border-radius: 12px; box-shadow: 0 3px 21px 3px rgba(60,64,67,0.08), 0 1.5px 3px 0 rgba(60,64,67,0.16); margin: 2.5rem auto 0 auto; }
